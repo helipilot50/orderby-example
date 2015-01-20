@@ -34,6 +34,7 @@ These are the options:
 - -q,--query		 Query Data.
 - -o,--order		 Query with Orderby Data.
 - -u,--usage       Print usage.
+- -a,--all			Scan ALL data with Orderby Data.
 
 
 ##Discussion

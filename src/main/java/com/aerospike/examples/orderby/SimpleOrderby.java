@@ -1,5 +1,6 @@
 package com.aerospike.examples.orderby;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
@@ -19,6 +20,7 @@ import com.aerospike.client.AerospikeException;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Language;
+import com.aerospike.client.lua.LuaConfig;
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.client.query.Filter;
@@ -75,6 +77,7 @@ public class SimpleOrderby {
 			options.addOption("l", "load", false, "Load Data.");
 			options.addOption("q", "query", false, "Query Data.");
 			options.addOption("o", "order", false, "Query with Orderby Data.");
+			options.addOption("a", "all", false, "Scan ALL with Orderby Data.");
 
 			CommandLineParser parser = new PosixParser();
 			CommandLine cl = parser.parse(options, args, false);
@@ -106,8 +109,12 @@ public class SimpleOrderby {
 			/*
 			 * register UDF
 			 */
-			URL udfUrl = as.getClass().getResource("qualifiers.lua");
-			RegisterTask rt = as.client.register(null, udfUrl, "qualifiers.lua", Language.LUA);
+			
+			URL udfUrl = as.getClass().getResource("/udf/qualifiers.lua");
+			File udfFile = new File(udfUrl.getFile());
+			LuaConfig.SourceDirectory = udfFile.getCanonicalFile().getParent();
+			String fileName = udfFile.getName();
+			RegisterTask rt = as.client.register(null, udfUrl, fileName, Language.LUA);
 			rt.waitTillComplete();
 			/*
 			 * process options
@@ -118,6 +125,8 @@ public class SimpleOrderby {
 				as.query();
 			else if (cl.hasOption("o"))
 				as.order();
+			else if (cl.hasOption("a"))
+				as.orderWithScan();
 			else
 				logUsage(options);
 			
@@ -146,6 +155,33 @@ public class SimpleOrderby {
 		stmt.setSetName(this.set);
 		stmt.setBinNames(SHOE_SIZE_BIN, SHOE_COLOUR_BIN);
 		stmt.setFilters(Filter.range(SHOE_SIZE_BIN, 8, 16));
+		/*
+		 * exxecute query
+		 */
+		ResultSet rs = this.client.queryAggregate(null, stmt, "qualifiers", "orderby");
+		/*
+		 * process results as they arrive from the cluster
+		 */
+		while (rs.next()){
+			Map<String, List<Map<String,Object>>> result = (Map<String,List<Map<String,Object>>>) rs.getObject();
+			for (String mapKey : result.keySet()) {
+				List<Map<String, Object>> group = result.get(mapKey);
+				System.out.println(mapKey + " size:" + group.size());
+				for (Map<String, Object> element : group){
+					System.out.println("\t" + element);
+				}
+			}
+		}
+	}
+
+	public void orderWithScan()  {
+		/*
+		 * Prepare a statement
+		 */
+		Statement stmt = new Statement();
+		stmt.setNamespace(this.namespace);
+		stmt.setSetName(this.set);
+		stmt.setBinNames(SHOE_SIZE_BIN, SHOE_COLOUR_BIN);
 		/*
 		 * exxecute query
 		 */

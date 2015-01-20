@@ -97,11 +97,6 @@
 				<directory>${project.basedir}/src/main/java</directory>
 				<includes>
 					<include>**/*.properties</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${project.basedir}</directory>
-				<includes>
 					<include>**/*.lua</include>
 				</includes>
 			</resource>

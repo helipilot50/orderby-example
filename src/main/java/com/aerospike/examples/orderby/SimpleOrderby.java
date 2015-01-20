@@ -2,6 +2,7 @@ package com.aerospike.examples.orderby;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -18,7 +19,6 @@ import com.aerospike.client.AerospikeException;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Language;
-import com.aerospike.client.Value;
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.client.query.Filter;
@@ -106,7 +106,8 @@ public class SimpleOrderby {
 			/*
 			 * register UDF
 			 */
-			RegisterTask rt = as.client.register(null, "udf/qualifiers.lua", "qualifiers.lua", Language.LUA);
+			URL udfUrl = as.getClass().getResource("qualifiers.lua");
+			RegisterTask rt = as.client.register(null, udfUrl, "qualifiers.lua", Language.LUA);
 			rt.waitTillComplete();
 			/*
 			 * process options

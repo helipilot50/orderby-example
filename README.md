@@ -92,7 +92,7 @@ while (rs.next()){
 }
 
 ```
-The heavy lifting is don in the UDF to order and group the results as they come from the query stream.
+The heavy lifting is done in the UDF to order and group the results as they come from the query stream.
 
 The stream is processed with a `Map()` function, then an `Aggregate()` function and finally a `Reduce()` function.
 

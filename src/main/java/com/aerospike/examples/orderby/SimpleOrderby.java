@@ -110,11 +110,7 @@ public class SimpleOrderby {
 			 * register UDF
 			 */
 			
-			URL udfUrl = as.getClass().getResource("/udf/qualifiers.lua");
-			File udfFile = new File(udfUrl.getFile());
-			LuaConfig.SourceDirectory = udfFile.getCanonicalFile().getParent();
-			String fileName = udfFile.getName();
-			RegisterTask rt = as.client.register(null, udfUrl, fileName, Language.LUA);
+			RegisterTask rt = as.client.register(null, "udf/qualifiers.lua", "qualifiers.lua", Language.LUA);
 			rt.waitTillComplete();
 			/*
 			 * process options

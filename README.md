@@ -6,9 +6,6 @@ You want to query a set of data in Aerospike and organise the result set using t
 ##Solution
 Use an **Aggregation** query and process the query stream to order and group the results. This works great for *small* result sets as the whole result set will be returned to the client heapspace.
 
-The source code for this solution is available on GitHub, and the README.md 
-http://github.com/some place. 
-
 ###Build instructions
 
 After cloning the repository, use maven to build the jar files. From the root directory of the project, issue the following command:

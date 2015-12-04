@@ -8,7 +8,7 @@ Use an **Aggregation** query and process the query stream to order and group the
 
 ###Build instructions
 
-After cloning the repository, use maven to build the jar files. From the root directory of the project, issue the following command:
+After cloning the repository at https://github.com/aerospike/orderby-example.git, use maven to build the jar files. From the root directory of the project, issue the following command:
 
 mvn clean package -DskipTests
 A JAR file will be produced in the directory 'target', this is:
